@@ -50,6 +50,7 @@ desktop.ini
 __tests__/
 coverage/
 notes/
+app.config.js
 
 
 

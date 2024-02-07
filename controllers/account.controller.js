@@ -1,33 +1,37 @@
 const db = require("../models");
 const Account = db.accounts;
 const Op = db.Sequelize.Op;
+const bcrypt = require('bcrypt');
 
 // Create and Save a new Account
-exports.create = (req, res) => {
-  // Validate request
+exports.create = async (req, res) => {
+  console.log('Request body:', req.body);
   if (!req.body.username || !req.body.password || !req.body.email) {
     res.status(400).send({
       message: "Content can not be empty!"
     });
     return;
   }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
   const account = {
     username: req.body.username,
-    password: req.body.password,
+    password: hashedPassword,
     email: req.body.email,
     created_at: Date.now(),
     last_login: Date.now()
   };
 
-  // Save Account in the database
   Account.create(account)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
+      console.log('Error:', err);
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Account."
+        message: err.message || "Some error occurred while creating the Account."
       });
     });
 };
