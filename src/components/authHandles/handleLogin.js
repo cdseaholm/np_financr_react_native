@@ -1,12 +1,10 @@
-const Keychain = require('react-native-keychain');
+import * as Keychain from 'react-native-keychain';
 
-async function handleLogin(username, password, navigation) {
+export async function handleLogin(username, password, navigation) {
   const credentials = await Keychain.getGenericPassword();
 
   if (credentials && credentials.username === username && credentials.password === password) {
     navigation.navigate('Homepage');
   }
 }
-
-module.exports = { handleLogin };
 

@@ -6,16 +6,17 @@ module.exports = function(api) {
       "nativewind/babel", 
       "react-native-reanimated/plugin",
       ["@babel/plugin-transform-react-jsx", {
-        "runtime": "automatic"
+        runtime: "automatic"
       }],
       ["transform-inline-environment-variables"],
       ["module:react-native-dotenv", {
-        "moduleName": "@env",
-        "path": ".env",
-        "blacklist": null,
-        "whitelist": null,
-        "safe": false,
-        "allowUndefined": true
+        moduleName: "@env",
+        verbose: false,
+        path: "./.env",
+        blacklist: null,
+        whitelist: null,
+        safe: false,
+        allowUndefined: true
       }]
     ],
   };
