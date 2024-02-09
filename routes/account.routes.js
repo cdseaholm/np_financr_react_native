@@ -9,9 +9,6 @@ module.exports = app => {
     // Retrieve all Accounts
     router.get("/all", accounts.findAll);
   
-    // Retrieve all published Accounts
-    router.get("/published", accounts.findAllPublished);
-  
     // Retrieve a single Account with id
     router.get("/get/:id", accounts.findOne);
   

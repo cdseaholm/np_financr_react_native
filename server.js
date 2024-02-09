@@ -2,13 +2,15 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const cors = require('cors');
 const app = express();
+require('dotenv').config();
 
 var allowedOrigins = process.env.EXPO_PUBLIC_ALLOWED_ORIGINS.split(',');
+const PORT = process.env.PORT || 8081;
+
+console.log('Allowed origins: ' + allowedOrigins);
 
 app.use(cors({
   origin: function(origin, callback){
-    // allow requests with no origin 
-    // (like mobile apps or curl requests)
     if(!origin) return callback(null, true);
     if(allowedOrigins.indexOf(origin) === -1){
       var msg = 'The CORS policy for this site does not ' +
@@ -19,10 +21,8 @@ app.use(cors({
   }
 }));
 
-// parse requests of content-type - application/json
 app.use(express.json());
 
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
 const { sequelize } = require("./models");
@@ -41,9 +41,7 @@ app.get("/", (req, res) => {
 
 require("./routes/account.routes")(app);
 
-// set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', function() {
   console.log(`Server is running on port ${PORT}.`);
 });
 
