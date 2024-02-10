@@ -1,6 +1,6 @@
 import React from 'react';
 import '../images/monthlybackground/jan.jpg'
-import '../images/monthlybackground/feb.jpg'
+import '../images/monthlybackground/feb.png'
 import '../images/monthlybackground/march.jpg'
 import '../images/monthlybackground/april.jpg'
 import '../images/monthlybackground/may.jpg'
@@ -18,7 +18,7 @@ function BackgroundMonth() {
 
   const monthImages = {
     0: require('../images/monthlybackground/jan.jpg'),
-    1: require('../images/monthlybackground/feb.jpg'),
+    1: require('../images/monthlybackground/feb.png'),
     2: require('../images/monthlybackground/march.jpg'),
     3: require('../images/monthlybackground/april.jpg'),
     4: require('../images/monthlybackground/may.jpg'),

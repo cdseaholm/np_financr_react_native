@@ -53,26 +53,43 @@ exports.findAll = (req, res) => {
       });
   };
 
-// Find a single Account with an id
-exports.findOne = (req, res) => {
-    const id = req.params.id;
-  
-    Account.findByPk(id)
+// Check if a username is in use
+exports.checkUsername = (req, res) => {
+  const username = req.query.username;
+
+  Account.findOne({ where: { username: username } })
       .then(data => {
-        if (data) {
-          res.send(data);
-        } else {
-          res.status(404).send({
-            message: `Cannot find Account with id=${id}.`
-          });
-        }
+          if (data) {
+              res.send({ usernameInUse: true });
+          } else {
+              res.send({ usernameInUse: false });
+          }
       })
       .catch(err => {
-        res.status(500).send({
-          message: "Error retrieving Account with id=" + id
-        });
+          res.status(500).send({
+            message: err.message || "Error retrieving Account with username=" + username
+          });
       });
-  };
+};
+
+// Check if an email is in use
+exports.checkEmail = (req, res) => {
+  const email = req.query.email;
+
+  Account.findOne({ where: { email: email } })
+      .then(data => {
+          if (data) {
+              res.send({ emailInUse: true });
+          } else {
+              res.send({ emailInUse: false });
+          }
+      })
+      .catch(err => {
+          res.status(500).send({
+              message: err.message || "Error retrieving Account with email=" + email
+          });
+      });
+};
 
 // Update an Account by the id in the request
 exports.update = (req, res) => {
