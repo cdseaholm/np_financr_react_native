@@ -7,7 +7,7 @@ module.exports = app => {
   
     router.get("/all", accounts.findAll);
   
-    router.get("/get/id/:id", accounts.findOne);
+    router.get("/get/id/:id", accounts.checkId);
 
     router.get("/get/username/:username", accounts.checkUsername);
 

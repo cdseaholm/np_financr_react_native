@@ -5,8 +5,16 @@ class AccountDataService {
     return http.get("/accounts");
   }
 
-  get(id) {
-    return http.get(`/accounts/${id}`);
+  getById(id) { 
+    return http.get(`/get/id/${id}`); 
+  }
+
+  getByUsername(username) { 
+    return http.get(`/get/username/${username}`); 
+  }
+
+  getByEmail(email) { 
+    return http.get(`/get/email/${email}`); 
   }
 
   create(data) {

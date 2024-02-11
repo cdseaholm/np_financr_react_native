@@ -1,3 +1,6 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 module.exports = {
     HOST: process.env.EXPO_PUBLIC_DATABASE_HOST,
     USER: process.env.EXPO_PUBLIC_DATABASE_USER,
