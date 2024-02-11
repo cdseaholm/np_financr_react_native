@@ -3,8 +3,8 @@ import { EXPO_PUBLIC_ACCOUNT_IP_URL } from '@env';
 import fetch from 'node-fetch';
 
 export async function checkForExistingEmail(email) {
-    try {
-        const response = await fetch(`${EXPO_PUBLIC_ACCOUNT_IP_URL}/get/email/${email}`, {
+    const url = `${EXPO_PUBLIC_ACCOUNT_IP_URL}/get/email/${email}`;
+        const response = await fetch(url, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -12,11 +12,13 @@ export async function checkForExistingEmail(email) {
             }
         });
 
+        console.log('emailresponse:', response);
+
         if (response.ok) {
             const data = await response.json();
             console.log('data:', data);
 
-            if (data.emailInUse) {
+            if (data.emailIsAvailable === false) {
                 Alert.alert('Email is already in use');
                 return false;
             }
@@ -26,9 +28,4 @@ export async function checkForExistingEmail(email) {
             console.error('Response not OK');
             return false;
         }
-    } catch (error) {
-        console.error('An error occurred:', error);
-        Alert.alert('An error occurred');
-        return false;
-    }
 }

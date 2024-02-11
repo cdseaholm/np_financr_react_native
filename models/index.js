@@ -1,4 +1,6 @@
 const dbConfig = require("../config/db.config.js");
+const dotenv = require('dotenv');
+dotenv.config();
 
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
@@ -15,6 +17,7 @@ const sequelize = new Sequelize(
     idle: dbConfig.pool.idle
   }
 });
+console.log('index.js sequelize:', sequelize);
 
 const db = {};
 

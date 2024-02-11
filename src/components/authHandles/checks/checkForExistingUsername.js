@@ -3,20 +3,20 @@ import { EXPO_PUBLIC_ACCOUNT_IP_URL } from '@env';
 import fetch from 'node-fetch';
 
 export async function checkForExistingUsername(username) {
-    try {
-        const response = await fetch(`${EXPO_PUBLIC_ACCOUNT_IP_URL}get/username/${username}`, {
+    const url = `${EXPO_PUBLIC_ACCOUNT_IP_URL}/get/username/${username}`;
+        const response = await fetch(url, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             }
         });
-
+        console.log('usernameresponse:', response);
         if (response.ok) {
             const data = await response.json();
             console.log('data:', data);
 
-            if (data.usernameInUse) {
+            if (data.usernameIsAvailable === false) {
                 Alert.alert('Username is already in use');
                 return false;
             }
@@ -26,9 +26,5 @@ export async function checkForExistingUsername(username) {
             console.error('Response not OK');
             return false;
         }
-    } catch (error) {
-        console.error('An error occurred:', error);
-        Alert.alert('An error occurred');
-        return false;
-    }
+
 }

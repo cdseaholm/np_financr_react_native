@@ -53,16 +53,36 @@ exports.findAll = (req, res) => {
       });
   };
 
+  exports.checkId = (req, res) => {
+    const id = req.params.id;
+  
+    Account.findByID(id)
+      .then(data => {
+        if (data) {
+          res.send(data);
+        } else {
+          res.status(404).send({
+            message: `Cannot find Account with id=${id}.`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error retrieving Account with id=" + id
+        });
+      });
+  };
+
 // Check if a username is in use
 exports.checkUsername = (req, res) => {
-  const username = req.query.username;
+  const username = req.params.username;
 
   Account.findOne({ where: { username: username } })
       .then(data => {
           if (data) {
-              res.send({ usernameInUse: true });
+              res.send({ usernameIsAvailable: false });
           } else {
-              res.send({ usernameInUse: false });
+              res.send({ usernameIsAvailable: true });
           }
       })
       .catch(err => {
@@ -74,14 +94,14 @@ exports.checkUsername = (req, res) => {
 
 // Check if an email is in use
 exports.checkEmail = (req, res) => {
-  const email = req.query.email;
+  const email = req.params.email;
 
   Account.findOne({ where: { email: email } })
       .then(data => {
           if (data) {
-              res.send({ emailInUse: true });
+              res.send({ emailIsAvailable: false });
           } else {
-              res.send({ emailInUse: false });
+              res.send({ emailIsAvailable: true });
           }
       })
       .catch(err => {
