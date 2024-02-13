@@ -6,13 +6,15 @@ import { StatusBar } from 'expo-status-bar'
 import { useNavigation } from '@react-navigation/native'
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { handleLogin } from '../../components/authHandles/handleLogin';
+import { UserContext } from '../../components/authHandles/userContext';
 
 
 
 export function Loginscreen() {
     const navigation = useNavigation();
-    const [username, setUsername] = React.useState('');
+    const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const { setUser } = UserContext(UserContext);
     
 
   return (
@@ -44,34 +46,34 @@ export function Loginscreen() {
           entering={FadeInDown.duration(1000).springify()}
           style={{ backgroundColor: 'rgba(0,0,0,0.2)', padding: 15, borderRadius: 20, width: '100%', marginBottom: 15 }}>
           <TextInput
-  placeholder="Enter your username"
-  placeholderTextColor={'gray'}
-  onChangeText={text => setUsername(text)}
-  value={username}
-/>
+            placeholder="Enter your email"
+            placeholderTextColor={'gray'}
+            onChangeText={text => setEmail(text)}
+            value={email}
+          />
         </Animated.View>
         <Animated.View
           entering={FadeInDown.delay(200).duration(1000).springify()}
           style={{ backgroundColor: 'rgba(0,0,0,0.2)', padding: 15, borderRadius: 20, width: '100%', marginBottom: 15 }}>
           <TextInput
-  placeholder="Enter your password"
-  placeholderTextColor={'gray'}
-  secureTextEntry
-  onChangeText={text => setPassword(text)}
-  value={password}
-/>
+            placeholder="Enter your password"
+            placeholderTextColor={'gray'}
+            secureTextEntry
+            onChangeText={text => setPassword(text)}
+            value={password}
+          />
         </Animated.View>
 
         <Animated.View
           entering={FadeInDown.delay(400).duration(1000).springify()}
           style={{ width: '33%', marginBottom: 15 }}>
           <TouchableOpacity
-  style={{ backgroundColor: 'rgb(76, 119, 85)', padding: 12, borderRadius: 20 }}
-  onPress={handleLogin(username, password, navigation)}
->
-  <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white', textAlign: 'center'}}
-  >Login</Text>
-</TouchableOpacity>
+            style={{ backgroundColor: 'rgb(76, 119, 85)', padding: 12, borderRadius: 20 }}
+            onPress={handleLogin(email, password, navigation, setUser)}>
+
+            <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white', textAlign: 'center'}}
+            >Login</Text>
+          </TouchableOpacity>
         </Animated.View>
 
                 <Animated.View 

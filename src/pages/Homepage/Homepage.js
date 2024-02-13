@@ -5,10 +5,13 @@ import { Stats } from "./MainScreens/Stats"
 import { Goals } from "./MainScreens/Goals"
 import { Calendar } from "./MainScreens/Calendar"
 import { FontAwesome } from '@expo/vector-icons';
+import { UserContext } from "../../components/authHandles/userContext";
 
 
 export function Homepage() {
+  const { user, setUser } = React.useContext(UserContext);
   const Tab = createBottomTabNavigator();
+  console.log('Logged In user:', user);
   return (
     <Tab.Navigator
     screenOptions={{tabBarShowLabel: true, 

@@ -17,6 +17,10 @@ class AccountDataService {
     return http.get(`/get/email/${email}`); 
   }
 
+  loginWithEmail(data) { 
+    return http.post("/get/login", data); 
+  }
+
   create(data) {
     return http.post("/accounts", data);
   }

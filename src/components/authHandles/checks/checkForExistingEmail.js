@@ -19,7 +19,6 @@ export async function checkForExistingEmail(email) {
             console.log('data:', data);
 
             if (data.emailIsAvailable === false) {
-                Alert.alert('Email is already in use');
                 return false;
             }
 
