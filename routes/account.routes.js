@@ -12,6 +12,8 @@ module.exports = app => {
     router.get("/get/username/:username", accounts.checkUsername);
 
     router.get("/get/email/:email", accounts.checkEmail);
+
+    router.post("/get/login", accounts.loginWithEmail);
   
     router.put("/update/:id", accounts.update);
   

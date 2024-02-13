@@ -8,6 +8,7 @@ import { Loginscreen } from './src/pages/Loginscreen/Loginscreen';
 import MainAppbar from './src/components/Main-appbar';
 import {BottomProfileModalSheet} from './src/components/BottomProfileModalSheet';
 import "bootstrap/dist/css/bootstrap.min.css";
+import UserContext from './src/components/authHandles/userContext';
 
 
 const RootStack = createNativeStackNavigator();
@@ -23,7 +24,7 @@ const RootStackScreen = () => {
 
     return (
    <RootStack.Navigator>
-          <RootStack.Group mode="modal" initialRouteName='Homepage' screenOptions={({ route }) => ({
+          <RootStack.Group mode="modal" initialRouteName='Login' screenOptions={({ route }) => ({
           header: () =>
             route.name !== 'Login' && route.name !== 'ResetPassword' && route.name !== 'Register' && route.name !== 'BottomProfileModalSheet' && (
               <MainAppbar openMenu={openMenu} closeMenu={closeMenu} isMenuVisible={isMenuVisible} isProfileMenuVisible={isProfileMenuVisible} openProfileMenu={openProfileMenu} closeProfileMenu={closeProfileMenu} />
@@ -46,10 +47,11 @@ const RootStackScreen = () => {
 export default function App() {
 
   return (
+    <UserContext.Provider value={{user, setUser}}>
     <NavigationContainer>
       <RootStackScreen />
     </NavigationContainer>
-
+    </UserContext.Provider>
   );
 }
 

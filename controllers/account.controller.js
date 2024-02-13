@@ -95,6 +95,8 @@ exports.checkUsername = (req, res) => {
 // Check if an email is in use
 exports.checkEmail = (req, res) => {
   const email = req.params.email;
+  const password = req.body.password;
+
 
   Account.findOne({ where: { email: email } })
       .then(data => {
@@ -109,6 +111,32 @@ exports.checkEmail = (req, res) => {
               message: err.message || "Error retrieving Account with email=" + email
           });
       });
+};
+
+exports.loginWithEmail = (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  Account.findOne({ where: { email: email } })
+    .then(data => {
+      if (data) {
+        bcrypt.compare(password, data.password, function(err, result) {
+          if(result) {
+            res.send({ loginSuccess: true });
+          } else {
+            res.send({ loginSuccess: false, message: "Incorrect password:"});
+            err.message || "Error retrieving Account with email=" + email
+          }
+        });
+      } else {
+        res.send({ loginSuccess: false });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Error retrieving Account with email=" + email
+      });
+    });
 };
 
 // Update an Account by the id in the request
