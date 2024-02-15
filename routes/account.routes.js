@@ -15,7 +15,7 @@ module.exports = app => {
 
     router.post("/get/login", accounts.loginWithEmail);
   
-    router.put("/update/:id", accounts.update);
+    router.put("/update/account/:email", accounts.update);
   
     router.delete("/delete/:id", accounts.delete);
   

@@ -14,12 +14,21 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING
     },
-    created_at: {
+    createdAt: {
       type: Sequelize.DATE
     },
     last_login: {
       type: Sequelize.DATE
-    }
+    },
+    updatedAt: {
+      type: Sequelize.DATE
+    },
+    session_id: {
+      type: Sequelize.STRING
+    },
+    session_expires: {
+      type: Sequelize.DATE
+    },
   });
 
   return Account;

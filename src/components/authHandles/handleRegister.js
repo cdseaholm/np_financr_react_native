@@ -2,6 +2,7 @@ import { Alert } from 'react-native';
 import { EXPO_PUBLIC_ACCOUNT_IP_URL } from '@env';
 import fetch from 'node-fetch';
 import { checkForExistingEmail } from './checks/checkForExistingEmail';
+import * as SecureStore from 'expo-secure-store';
 
 export async function handleRegister(username, email, password, confirmPassword, navigation) {
     if (!username || !email || !password || !confirmPassword) {
@@ -13,7 +14,6 @@ export async function handleRegister(username, email, password, confirmPassword,
         } else {
 
             const emailIsAvailable = await checkForExistingEmail(email);
-            console.log('usernameIsAvailable:', emailIsAvailable);
             if (!emailIsAvailable) { // Change this
                 Alert.alert('Email is already in use');
             }
@@ -31,14 +31,16 @@ export async function handleRegister(username, email, password, confirmPassword,
                         email: email
                     })
                 });
-                console.log('regresponse:', response);
+
                     
                 if (response.ok) {
+                    const data = await response.json();
+                    const session_id = data.session_id;
+                    await SecureStore.setItemAsync('session_id', session_id);
                     navigation.navigate('Homepage');
                 } else {
-                    console.log('Response status:', response.status);
-                    const responseText = await response.text();
-                    console.log('Response text:', responseText);
+                    //const responseText = await response.text();
+                    //console.log('Response text:', responseText);
                     Alert.alert('Registration failed');
                 }
             }

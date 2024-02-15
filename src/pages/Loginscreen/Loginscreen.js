@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar'
 import { useNavigation } from '@react-navigation/native'
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { handleLogin } from '../../components/authHandles/handleLogin';
-import { UserContext } from '../../components/authHandles/userContext';
+import UserContext from '../../components/authHandles/userContext';
 
 
 
@@ -14,7 +14,7 @@ export function Loginscreen() {
     const navigation = useNavigation();
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
-    const { setUser } = UserContext(UserContext);
+    const { setUser } = React.useContext(UserContext);
     
 
   return (
@@ -69,7 +69,7 @@ export function Loginscreen() {
           style={{ width: '33%', marginBottom: 15 }}>
           <TouchableOpacity
             style={{ backgroundColor: 'rgb(76, 119, 85)', padding: 12, borderRadius: 20 }}
-            onPress={handleLogin(email, password, navigation, setUser)}>
+            onPress={() => handleLogin(email, password, navigation, setUser)}>
 
             <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white', textAlign: 'center'}}
             >Login</Text>
