@@ -1,8 +1,7 @@
-import React from 'react';
 import { Alert } from 'react-native';
 import { EXPO_PUBLIC_ACCOUNT_IP_URL } from '@env';
 import fetch from 'node-fetch';
-import { useNavigation } from '@react-navigation/native';
+import { handleUpdate } from './handleUpdate';
 
 export async function handleLogin(email, password, navigation, setUser) {
 
@@ -20,13 +19,25 @@ export async function handleLogin(email, password, navigation, setUser) {
           email: email, 
           password: password })
       });
-      console.log('logresponse:', response);
       if (response.ok) {
         const data = await response.json();
-        setUser(data.email);
-        navigation.navigate('Homepage');
+        console.log('data:', data);
+        if (data.loginSuccess) {
+          const userThis = data.user;
+          console.log('userThis:', userThis);
+          const updateSuccess = await handleUpdate(email);
+          if (!updateSuccess) {
+            console.log('Failed to update login details');
+            Alert.alert('Login failed. Please try again.');
+            return;
+          }
+          console.log(userThis);
+          setUser(userThis);
+          navigation.navigate('Homepage');
+        } else {
+          Alert.alert('Login failed');
+        }
       } else {
-        console.log('Response status:', response.status);
         const responseText = await response.text();
         console.log('Response text:', responseText);
         Alert.alert('Login failed');

@@ -1,6 +1,6 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useState, Component } from 'react';
+import React, {useState, useEffect } from 'react';
 import { Homepage } from './src/pages/Homepage/Homepage';
 import { Registerpage } from './src/pages/Registerpage/Registerpage';
 import { Resetpassword } from './src/pages/Resetpassword/Resetpassword';
@@ -9,18 +9,35 @@ import MainAppbar from './src/components/Main-appbar';
 import {BottomProfileModalSheet} from './src/components/BottomProfileModalSheet';
 import "bootstrap/dist/css/bootstrap.min.css";
 import UserContext from './src/components/authHandles/userContext';
+import { MMKV } from 'react-native-mmkv';
 
 
 const RootStack = createNativeStackNavigator();
-const RootStackScreen = () => {
+const RootStackScreen = ({user, setUser}) => {
+  const [user, setUser] = useState(null);
+  const navigation = useNavigation();
   const [isLoading, setisLoading] = React.useState(true);
-  const [user, setUser] = React.useState(null);
   const [isMenuVisible, setMenuVisible] = useState(false);
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
   const [isProfileMenuVisible, setProfileMenuVisible] = useState(false);
   const openProfileMenu = () => setProfileMenuVisible(true);
   const closeProfileMenu = () => setProfileMenuVisible(false);
+
+  useEffect(() => {
+    const storedUser = MMKV.getString('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      MMKV.set('user', JSON.stringify(user));
+    } else {
+      MMKV.delete('user');
+    }
+  }, [user]);
 
     return (
    <RootStack.Navigator>
@@ -45,15 +62,13 @@ const RootStackScreen = () => {
 
 
 export default function App() {
+  const [user, setUser] = useState(null);
 
   return (
     <UserContext.Provider value={{user, setUser}}>
-    <NavigationContainer>
-      <RootStackScreen />
-    </NavigationContainer>
+      <NavigationContainer>
+        <RootStackScreen user={user} setUser={setUser} />
+      </NavigationContainer>
     </UserContext.Provider>
   );
 }
-
-
-

@@ -12,11 +12,9 @@ export async function checkForExistingEmail(email) {
             }
         });
 
-        console.log('emailresponse:', response);
 
         if (response.ok) {
             const data = await response.json();
-            console.log('data:', data);
 
             if (data.emailIsAvailable === false) {
                 return false;
@@ -24,7 +22,6 @@ export async function checkForExistingEmail(email) {
 
             return true;
         } else {
-            console.error('Response not OK');
             return false;
         }
 }

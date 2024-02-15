@@ -26,9 +26,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const { sequelize } = require("./models");
-sequelize.sync({ force: true })
+sequelize.sync()
   .then(() => {
-    console.log("Drop and re-sync db.");
+    console.log("Synced db.");
   })
   .catch((err) => {
     console.log("Failed to sync db: " + err.message);

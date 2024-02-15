@@ -5,7 +5,7 @@ import { Stats } from "./MainScreens/Stats"
 import { Goals } from "./MainScreens/Goals"
 import { Calendar } from "./MainScreens/Calendar"
 import { FontAwesome } from '@expo/vector-icons';
-import { UserContext } from "../../components/authHandles/userContext";
+import UserContext from "../../components/authHandles/userContext";
 
 
 export function Homepage() {

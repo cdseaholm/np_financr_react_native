@@ -1,7 +1,13 @@
+const { generate } = require("nth-check");
 const db = require("../models");
 const Account = db.accounts;
 const Op = db.Sequelize.Op;
 const bcrypt = require('bcrypt');
+const uuid = require('uuid');
+
+function generateSessionId() {
+  return uuid.v4();
+}
 
 // Create and Save a new Account
 exports.create = async (req, res) => {
@@ -15,13 +21,18 @@ exports.create = async (req, res) => {
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
+  const sessionId = generateSessionId();
+  const session_expires = new Date();
+  session_expires.setDate(session_expires.getDate() + 10);
 
   const account = {
     username: req.body.username,
     password: hashedPassword,
     email: req.body.email,
-    created_at: Date.now(),
-    last_login: Date.now()
+    createdAt: new Date(),
+    last_login: new Date(),
+    session_id: sessionId,
+    session_expires: session_expires
   };
 
   Account.create(account)
@@ -120,12 +131,22 @@ exports.loginWithEmail = (req, res) => {
   Account.findOne({ where: { email: email } })
     .then(data => {
       if (data) {
+        
         bcrypt.compare(password, data.password, function(err, result) {
           if(result) {
-            res.send({ loginSuccess: true });
-          } else {
+            const user = {
+              username: data.username,
+              email: data.email,
+              createdAt: data.createdAt,
+              last_login: data.last_login,
+              session_id: data.session_id,
+              session_expires: data.session_expires
+            };
+            res.send({ user: user, loginSuccess: true });
+          } else if (password !== data.password) {
             res.send({ loginSuccess: false, message: "Incorrect password:"});
-            err.message || "Error retrieving Account with email=" + email
+          } else {
+            res.send({ loginSuccess: false, message: "Error logging in:"});
           }
         });
       } else {
@@ -141,10 +162,13 @@ exports.loginWithEmail = (req, res) => {
 
 // Update an Account by the id in the request
 exports.update = (req, res) => {
-    const id = req.params.id;
+    const email = req.body.email;
+    const new_last_login = req.body.last_login;
+    const new_updatedAt = req.body.updatedAt;
+    const new_session_expires = req.body.session_expires;
   
     Account.update(req.body, {
-      where: { user_id: id }
+      where: { email: email, last_login: new_last_login, updatedAt: new_updatedAt, session_expires: new_session_expires}
     })
       .then(num => {
         if (num == 1) {
@@ -153,13 +177,13 @@ exports.update = (req, res) => {
           });
         } else {
           res.send({
-            message: `Cannot update Account with id=${id}. Maybe Account was not found or req.body is empty!`
+            message: `Cannot update Account with email=${email}. Maybe Account was not found or req.body is empty!`
           });
         }
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error updating Account with id=" + id
+          message: "Error updating Account with email=" + email
         });
       });
   };
