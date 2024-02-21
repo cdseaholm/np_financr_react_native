@@ -1,5 +1,3 @@
-async function handleClosePress (navigation) {
+export async function handleClosePress (navigation) {
     navigation.pop();
   };
-
-module.exports = { handleClosePress };

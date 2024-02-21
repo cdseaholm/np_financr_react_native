@@ -22,7 +22,6 @@ export async function handleUpdate(email) {
       if (!updateResponse.ok) {
         return false;
       }
-      console.log(email);
       return true;
 
 }

@@ -4,6 +4,10 @@ module.exports = app => {
     var router = require("express").Router();
   
     router.post("/register", accounts.create);
+
+    router.post("/logout", accounts.logout);
+
+    router.post("/authenticate", accounts.authenticate);
   
     router.get("/all", accounts.findAll);
   
@@ -17,7 +21,7 @@ module.exports = app => {
   
     router.put("/update/account/:email", accounts.update);
   
-    router.delete("/delete/:id", accounts.delete);
+    router.delete("/delete/:email", accounts.delete);
   
     router.delete("/delete-all", accounts.deleteAll);
   

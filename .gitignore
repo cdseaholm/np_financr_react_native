@@ -51,6 +51,8 @@ __tests__/
 coverage/
 notes/
 app.config.js
+package.json
+package-lock.json
 
 
 
