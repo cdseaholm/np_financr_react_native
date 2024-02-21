@@ -1,4 +1,3 @@
-const { generate } = require("nth-check");
 const db = require("../models");
 const Account = db.accounts;
 const Op = db.Sequelize.Op;
@@ -9,7 +8,91 @@ function generateSessionId() {
   return uuid.v4();
 }
 
-// Create and Save a new Account
+exports.authenticate = (req, res) => {
+  const session_id = req.body.session_id;
+  // Get the session from the database
+  Session.findOne({
+    where: {
+      id: session_id
+    }
+  })
+  .then(session => {
+    if (session) {
+      User.findOne({
+        where: {
+          id: session.userId
+        }
+      })
+      .then(user => {
+        res.send({ user: user });
+      });
+    } else {
+      res.status(401).send({ error: 'Invalid session_id' });
+    }
+  })
+  .catch(err => {
+    res.status(500).send({ error: 'Server error' });
+  });
+};
+
+exports.getById = (req, res) => {
+  const id = req.params.id;
+
+  Account.findByID(id)
+    .then(data => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Account with id=${id}.`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error retrieving Account with id=" + id
+      });
+    });
+};
+
+exports.getByUsername = (req, res) => {
+  const username = req.params.username;
+
+  Account.findOne({ where: { username: username } })
+      .then(data => {
+          if (data) {
+              res.send({ usernameIsAvailable: false });
+          } else {
+              res.send({ usernameIsAvailable: true });
+          }
+      })
+      .catch(err => {
+          res.status(500).send({
+            message: err.message || "Error retrieving Account with username=" + username
+          });
+      });
+};
+
+exports.checkEmail = (req, res) => {
+  const email = req.params.email;
+  const password = req.body.password;
+
+
+  Account.findOne({ where: { email: email } })
+      .then(data => {
+          if (data) {
+              res.send({ emailIsAvailable: false });
+          } else {
+              res.send({ emailIsAvailable: true });
+          }
+      })
+      .catch(err => {
+          res.status(500).send({
+              message: err.message || "Error retrieving Account with email=" + email
+          });
+      });
+};
+
 exports.create = async (req, res) => {
   console.log('Request body:', req.body);
   if (!req.body.username || !req.body.password || !req.body.email) {
@@ -47,7 +130,42 @@ exports.create = async (req, res) => {
     });
 };
 
-// Retrieve all Accounts from the database.
+exports.delete = (req, res) => {
+  const email = req.body.email;
+
+  Account.destroy({
+    where: { email: email }
+  })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "Account was deleted successfully!"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Could not delete Account with email=" + email
+      });
+    });
+};
+
+exports.deleteAll = (req, res) => {
+  Account.destroy({
+    where: {},
+    truncate: false
+  })
+    .then(nums => {
+      res.send({ message: `${nums} Accounts were deleted successfully!` });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while removing all accounts."
+      });
+    });
+};
+
 exports.findAll = (req, res) => {
     const username = req.query.username;
     var condition = username ? { username: { [Op.iLike]: `%${username}%` } } : null;
@@ -62,66 +180,31 @@ exports.findAll = (req, res) => {
             err.message || "Some error occurred while retrieving accounts."
         });
       });
-  };
-
-  exports.checkId = (req, res) => {
-    const id = req.params.id;
-  
-    Account.findByID(id)
-      .then(data => {
-        if (data) {
-          res.send(data);
-        } else {
-          res.status(404).send({
-            message: `Cannot find Account with id=${id}.`
-          });
-        }
-      })
-      .catch(err => {
-        res.status(500).send({
-          message: "Error retrieving Account with id=" + id
-        });
-      });
-  };
-
-// Check if a username is in use
-exports.checkUsername = (req, res) => {
-  const username = req.params.username;
-
-  Account.findOne({ where: { username: username } })
-      .then(data => {
-          if (data) {
-              res.send({ usernameIsAvailable: false });
-          } else {
-              res.send({ usernameIsAvailable: true });
-          }
-      })
-      .catch(err => {
-          res.status(500).send({
-            message: err.message || "Error retrieving Account with username=" + username
-          });
-      });
 };
 
-// Check if an email is in use
-exports.checkEmail = (req, res) => {
-  const email = req.params.email;
-  const password = req.body.password;
-
-
-  Account.findOne({ where: { email: email } })
-      .then(data => {
-          if (data) {
-              res.send({ emailIsAvailable: false });
-          } else {
-              res.send({ emailIsAvailable: true });
-          }
-      })
-      .catch(err => {
-          res.status(500).send({
-              message: err.message || "Error retrieving Account with email=" + email
-          });
+exports.logout = (req, res) => {
+    const session_id = req.body.session_id;
+    Session.destroy({
+      where: {
+        id: session_id
+      }
+    })
+    .then(num => {
+      if (num == 1) {
+        res.send({
+          message: "Session was deleted successfully!"
+        });
+      } else {
+        res.send({
+          message: `Cannot delete Session with id=${session_id}. Maybe Session was not found!`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Could not delete Session with id=" + session_id
       });
+    });
 };
 
 exports.loginWithEmail = (req, res) => {
@@ -131,7 +214,6 @@ exports.loginWithEmail = (req, res) => {
   Account.findOne({ where: { email: email } })
     .then(data => {
       if (data) {
-        
         bcrypt.compare(password, data.password, function(err, result) {
           if(result) {
             const user = {
@@ -143,14 +225,12 @@ exports.loginWithEmail = (req, res) => {
               session_expires: data.session_expires
             };
             res.send({ user: user, loginSuccess: true });
-          } else if (password !== data.password) {
-            res.send({ loginSuccess: false, message: "Incorrect password:"});
           } else {
-            res.send({ loginSuccess: false, message: "Error logging in:"});
+            res.send({ loginSuccess: false, message: "Incorrect password:"});
           }
         });
       } else {
-        res.send({ loginSuccess: false });
+        res.send({ loginSuccess: false, message: "Email not found:" });
       }
     })
     .catch(err => {
@@ -160,7 +240,6 @@ exports.loginWithEmail = (req, res) => {
     });
 };
 
-// Update an Account by the id in the request
 exports.update = (req, res) => {
     const email = req.body.email;
     const new_last_login = req.body.last_login;
@@ -186,46 +265,4 @@ exports.update = (req, res) => {
           message: "Error updating Account with email=" + email
         });
       });
-  };
-
-// Delete an Account with the specified id in the request
-exports.delete = (req, res) => {
-    const id = req.params.id;
-  
-    Account.destroy({
-      where: { user_id: id }
-    })
-      .then(num => {
-        if (num == 1) {
-          res.send({
-            message: "Account was deleted successfully!"
-          });
-        } else {
-          res.send({
-            message: `Cannot delete Account with id=${id}. Maybe Account was not found!`
-          });
-        }
-      })
-      .catch(err => {
-        res.status(500).send({
-          message: "Could not delete Account with id=" + id
-        });
-      });
-  };
-
-// Delete all Accounts from the database.
-exports.deleteAll = (req, res) => {
-    Account.destroy({
-      where: {},
-      truncate: false
-    })
-      .then(nums => {
-        res.send({ message: `${nums} Accounts were deleted successfully!` });
-      })
-      .catch(err => {
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while removing all accounts."
-        });
-      });
-  };
+};
