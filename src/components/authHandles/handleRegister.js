@@ -17,7 +17,7 @@ export async function handleRegister(username, email, password, confirmPassword,
             if (!emailIsAvailable) { // Change this
                 Alert.alert('Email is already in use');
             }
-            //console.log('emailIsAvailable:', emailIsAvailable);
+
             if (emailIsAvailable) {
                 const response = await fetch(`${EXPO_PUBLIC_ACCOUNT_IP_URL}/register`, {
                     method: 'POST',

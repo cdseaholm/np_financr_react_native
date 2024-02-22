@@ -17,7 +17,6 @@ const sequelize = new Sequelize(
     idle: dbConfig.pool.idle
   }
 });
-console.log('index.js sequelize:', sequelize);
 
 const db = {};
 
