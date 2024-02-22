@@ -6,13 +6,15 @@ import { Goals } from "./MainScreens/Goals"
 import { Calendar } from "./MainScreens/Calendar"
 import { FontAwesome } from '@expo/vector-icons';
 import UserContext from "../../components/authHandles/userContext";
+import { useUserAuthentication } from "../../components/authHandles/useUserAuthentication";
 
 
-export function Homepage() {
-  const { user, setUser } = React.useContext(UserContext);
-  const Tab = createBottomTabNavigator();
+const Homepage = ({ navigation }) => {
+  const [user, setUser] = useUserAuthentication(navigation);
   console.log('Logged In user:', user);
+  const Tab = createBottomTabNavigator();
   return (
+    <UserContext.Provider value={{ user, setUser }}>
     <Tab.Navigator
     screenOptions={{tabBarShowLabel: true, 
     tabBarStyle: {
@@ -65,6 +67,7 @@ export function Homepage() {
           ),
           tabBarLabel: "Goals",}} />
     </Tab.Navigator>
+    </UserContext.Provider>
   )
 }
 

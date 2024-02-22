@@ -8,12 +8,12 @@ function generateSessionId() {
   return uuid.v4();
 }
 
+//authenticate
 exports.authenticate = (req, res) => {
-  const session_id = req.body.session_id;
-  // Get the session from the database
+  const session_id_in = req.body.session_id;
   Session.findOne({
     where: {
-      id: session_id
+      session_id: session_id_in
     }
   })
   .then(session => {
@@ -35,64 +35,7 @@ exports.authenticate = (req, res) => {
   });
 };
 
-exports.getById = (req, res) => {
-  const id = req.params.id;
-
-  Account.findByID(id)
-    .then(data => {
-      if (data) {
-        res.send(data);
-      } else {
-        res.status(404).send({
-          message: `Cannot find Account with id=${id}.`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error retrieving Account with id=" + id
-      });
-    });
-};
-
-exports.getByUsername = (req, res) => {
-  const username = req.params.username;
-
-  Account.findOne({ where: { username: username } })
-      .then(data => {
-          if (data) {
-              res.send({ usernameIsAvailable: false });
-          } else {
-              res.send({ usernameIsAvailable: true });
-          }
-      })
-      .catch(err => {
-          res.status(500).send({
-            message: err.message || "Error retrieving Account with username=" + username
-          });
-      });
-};
-
-exports.checkEmail = (req, res) => {
-  const email = req.params.email;
-  const password = req.body.password;
-
-
-  Account.findOne({ where: { email: email } })
-      .then(data => {
-          if (data) {
-              res.send({ emailIsAvailable: false });
-          } else {
-              res.send({ emailIsAvailable: true });
-          }
-      })
-      .catch(err => {
-          res.status(500).send({
-              message: err.message || "Error retrieving Account with email=" + email
-          });
-      });
-};
-
+//create
 exports.create = async (req, res) => {
   console.log('Request body:', req.body);
   if (!req.body.username || !req.body.password || !req.body.email) {
@@ -130,6 +73,24 @@ exports.create = async (req, res) => {
     });
 };
 
+//delete all
+exports.deleteAll = (req, res) => {
+  Account.destroy({
+    where: {},
+    truncate: false
+  })
+    .then(nums => {
+      res.send({ message: `${nums} Accounts were deleted successfully!` });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while removing all accounts."
+      });
+    });
+};
+
+//delete by email
 exports.delete = (req, res) => {
   const email = req.body.email;
 
@@ -150,22 +111,7 @@ exports.delete = (req, res) => {
     });
 };
 
-exports.deleteAll = (req, res) => {
-  Account.destroy({
-    where: {},
-    truncate: false
-  })
-    .then(nums => {
-      res.send({ message: `${nums} Accounts were deleted successfully!` });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while removing all accounts."
-      });
-    });
-};
-
+//get all
 exports.findAll = (req, res) => {
     const username = req.query.username;
     var condition = username ? { username: { [Op.iLike]: `%${username}%` } } : null;
@@ -182,6 +128,68 @@ exports.findAll = (req, res) => {
       });
 };
 
+//get by email
+exports.getByEmail = (req, res) => {
+  const email = req.params.email;
+  const password = req.body.password;
+
+
+  Account.findOne({ where: { email: email } })
+      .then(data => {
+          if (data) {
+              res.send({ emailIsAvailable: false });
+          } else {
+              res.send({ emailIsAvailable: true });
+          }
+      })
+      .catch(err => {
+          res.status(500).send({
+              message: err.message || "Error retrieving Account with email=" + email
+          });
+      });
+};
+
+//get by id
+exports.getById = (req, res) => {
+  const id = req.params.id;
+
+  Account.findByID(id)
+    .then(data => {
+      if (data) {
+        res.send(data);
+      } else {
+        res.status(404).send({
+          message: `Cannot find Account with id=${id}.`
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error retrieving Account with id=" + id
+      });
+    });
+};
+
+//get by username
+exports.getByUsername = (req, res) => {
+  const username = req.params.username;
+
+  Account.findOne({ where: { username: username } })
+      .then(data => {
+          if (data) {
+              res.send({ usernameIsAvailable: false });
+          } else {
+              res.send({ usernameIsAvailable: true });
+          }
+      })
+      .catch(err => {
+          res.status(500).send({
+            message: err.message || "Error retrieving Account with username=" + username
+          });
+      });
+};
+
+//logout
 exports.logout = (req, res) => {
     const session_id = req.body.session_id;
     Session.destroy({
@@ -207,6 +215,7 @@ exports.logout = (req, res) => {
     });
 };
 
+//login with email
 exports.loginWithEmail = (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -240,6 +249,7 @@ exports.loginWithEmail = (req, res) => {
     });
 };
 
+//update by email
 exports.update = (req, res) => {
     const email = req.body.email;
     const new_last_login = req.body.last_login;

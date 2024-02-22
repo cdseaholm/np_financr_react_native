@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
 import * as Keychain from 'react-native-keychain';
 import { EXPO_PUBLIC_ACCOUNT_IP_URL } from '@env';
 import { Alert } from 'react-native';
 
 
-export const useUserAuthentication = () => {
+export const useUserAuthentication = (navigation) => {
   const [user, setUser] = useState(null);
-  const navigation = useNavigation();
+
+  if (user) {
+    navigation.navigate('Homepage');
+  } else {
+    navigation.navigate('Login');
+  }
 
   useEffect(() => {
     const retrieveSession = async () => {
@@ -15,17 +19,7 @@ export const useUserAuthentication = () => {
         const credentials = await Keychain.getGenericPassword();
         const session_id = credentials.password;
         if (session_id !== null) {
-          authenticateUser(session_id)
-            .then(user => {
-              setUser(user);
-              navigation.navigate('Homepage');
-            })
-            .catch(error => {
-              console.log('Authentication error:', error);
-              Alert.alert('Authentication error');
-            });
-        } else {
-          navigation.navigate('Login');
+          authenticateUser(session_id);
         }
       } catch (error) {
         Alert.alert('Keychain error');
@@ -46,13 +40,15 @@ export const useUserAuthentication = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log('User:', data.user);
-        return data.user;
+        setUser(data.user);
+        navigation.navigate('Homepage');
       } else {
-        Alert.alert('Response error');
+        Alert.alert('Response Error');
+        navigation.navigate('Login');
       }
     } catch (error) {
       Alert.alert('Error');
     }
-  }
+  };
+  return [user, setUser];
 };
