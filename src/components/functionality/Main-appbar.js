@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
-import Logo from '../images/nplogo.png';
+import Logo from '../../images/nplogo.png';
 import { Menu, Avatar, PaperProvider, Divider, IconButton, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
