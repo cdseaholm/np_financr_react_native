@@ -5,16 +5,17 @@ import { Stats } from "./MainScreens/Stats"
 import { Goals } from "./MainScreens/Goals"
 import { Calendar } from "./MainScreens/Calendar"
 import { FontAwesome } from '@expo/vector-icons';
-import UserContext from "../../components/authHandles/userContext";
-import { useUserAuthentication } from "../../components/authHandles/useUserAuthentication";
+import { withFAB } from "../../components/functionality/MainFloatingActionButton";
+//import UserContext from "../../components/authHandles/userContext";
+//import { useUserAuthentication } from "../../components/authHandles/useUserAuthentication";
 
 
 const Homepage = ({ navigation }) => {
-  const [user, setUser] = useUserAuthentication(navigation);
-  console.log('Logged In user:', user);
+  //const [user, setUser] = useUserAuthentication(navigation);
+  //console.log('Logged In user:', user);
   const Tab = createBottomTabNavigator();
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    //<UserContext.Provider value={{ user, setUser }}>
     <Tab.Navigator
     screenOptions={{tabBarShowLabel: true, 
     tabBarStyle: {
@@ -30,7 +31,7 @@ const Homepage = ({ navigation }) => {
     }}}>
       <Tab.Screen
         name="Home"
-        component={Home}
+        component={withFAB(Home)}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="home" size={size} color={color} />
@@ -40,7 +41,7 @@ const Homepage = ({ navigation }) => {
       />
       <Tab.Screen
         name="Calendar"
-        component={Calendar}
+        component={withFAB(Calendar)}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="calendar" size={size} color={color} />
@@ -50,7 +51,7 @@ const Homepage = ({ navigation }) => {
       />
       <Tab.Screen
         name="Stats"
-        component={Stats}
+        component={withFAB(Stats)}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="line-chart" size={size} color={color} />
@@ -60,14 +61,14 @@ const Homepage = ({ navigation }) => {
       />
       <Tab.Screen
         name="Goals"
-        component={Goals}
+        component={withFAB(Goals)}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="bullseye" size={size} color={color} />
           ),
           tabBarLabel: "Goals",}} />
     </Tab.Navigator>
-    </UserContext.Provider>
+    //</UserContext.Provider>
   )
 }
 

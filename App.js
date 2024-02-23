@@ -5,10 +5,9 @@ import Homepage from './src/pages/Homepage/Homepage';
 import { Registerpage } from './src/pages/Registerpage/Registerpage';
 import { Resetpassword } from './src/pages/Resetpassword/Resetpassword';
 import { Loginscreen } from './src/pages/Loginscreen/Loginscreen';
-import MainAppbar from './src/components/Main-appbar';
-import {BottomProfileModalSheet} from './src/components/BottomProfileModalSheet';
+import MainAppbar from './src/components/functionality/Main-appbar';
+import {BottomProfileModalSheet} from './src/components/functionality/BottomProfileModalSheet';
 import "bootstrap/dist/css/bootstrap.min.css";
-import AuthLoading from './src/components/authHandles/authLoading';
 
 const RootStack = createNativeStackNavigator();
 const RootStackScreen = () => {
@@ -26,14 +25,13 @@ const RootStackScreen = () => {
 
   return (
       <RootStack.Navigator>
-        <RootStack.Group mode="modal" screenOptions={({ route }) => ({
+        <RootStack.Group mode="modal" initialRouteName='Homepage' screenOptions={({ route }) => ({
           header: () =>
             shouldShowHeader(route.name) && (
               <MainAppbar openMenu={openMenu} closeMenu={closeMenu} isMenuVisible={isMenuVisible} isProfileMenuVisible={isProfileMenuVisible} openProfileMenu={openProfileMenu} closeProfileMenu={closeProfileMenu} />
             ),
                 
         })}>
-          <RootStack.Screen name="AuthLoading" component={AuthLoading} />
           <RootStack.Screen name="Homepage" component={Homepage} />
           <RootStack.Screen name="Register" component={Registerpage} />
           <RootStack.Screen name="ResetPassword" component={Resetpassword} />

@@ -3,26 +3,21 @@ import * as Keychain from 'react-native-keychain';
 import { EXPO_PUBLIC_ACCOUNT_IP_URL } from '@env';
 import { Alert } from 'react-native';
 
-
-export const useUserAuthentication = (navigation) => {
+export const useUserAuthentication = () => {
   const [user, setUser] = useState(null);
-
-  if (user) {
-    navigation.navigate('Homepage');
-  } else {
-    navigation.navigate('Login');
-  }
 
   useEffect(() => {
     const retrieveSession = async () => {
       try {
         const credentials = await Keychain.getGenericPassword();
-        const session_id = credentials.password;
+        const session_id = credentials ? credentials.password : null;
         if (session_id !== null) {
           authenticateUser(session_id);
         }
       } catch (error) {
-        Alert.alert('Keychain error');
+        if (!error.message.includes("Cannot read property 'getGenericPasswordForOptions' of null")) {
+          Alert.alert('Keychain error');
+        }
       }
     };
     retrieveSession();
@@ -41,10 +36,8 @@ export const useUserAuthentication = (navigation) => {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
-        navigation.navigate('Homepage');
       } else {
         Alert.alert('Response Error');
-        navigation.navigate('Login');
       }
     } catch (error) {
       Alert.alert('Error');

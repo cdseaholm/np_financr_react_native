@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { View, Text } from 'react-native';
-import { handleDeletProfile } from './authHandles/handleDeleteProfile';
-import { handleClosePress } from './basicHandles/handleClose';
+import { handleDeletProfile } from '../authHandles/handleDeleteProfile';
+import { handleClosePress } from '../basicHandles/handleClose';
 import { useNavigation } from '@react-navigation/native';
 
 export function BottomProfileModalSheet() {

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import logo from '../images/nplogo.png'
+import logo from '../../images/nplogo.png'
 
 const Header = ({title, subheader, headClassName, subheadClassName, appLogoClassName}) => {
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, ImageBackground } from 'react-native';
-import BackgroundMonth from "../../../components/BackgroundMonth";
+import BackgroundMonth from "../../../components/uiComponents/BackgroundMonth";
 
 export function Goals() {
   const monthToUse = BackgroundMonth();
