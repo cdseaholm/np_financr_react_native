@@ -6,6 +6,10 @@ import { Goals } from "./MainScreens/Goals"
 import { Calendar } from "./MainScreens/Calendar"
 import { FontAwesome } from '@expo/vector-icons';
 import { withFAB } from "../../components/functionality/MainFloatingActionButton";
+import { HomeFABs } from "../../components/functionality/screenFABs/HomeFAB";
+import { CalendarFABs } from "../../components/functionality/screenFABs/CalendarFAB";
+import { GoalFABs } from "../../components/functionality/screenFABs/GoalFAB";
+import { StatFABs } from "../../components/functionality/screenFABs/StatFAB";
 //import UserContext from "../../components/authHandles/userContext";
 //import { useUserAuthentication } from "../../components/authHandles/useUserAuthentication";
 
@@ -31,7 +35,7 @@ const Homepage = ({ navigation }) => {
     }}}>
       <Tab.Screen
         name="Home"
-        component={withFAB(Home)}
+        component={withFAB(Home, HomeFABs)}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="home" size={size} color={color} />
@@ -41,7 +45,7 @@ const Homepage = ({ navigation }) => {
       />
       <Tab.Screen
         name="Calendar"
-        component={withFAB(Calendar)}
+        component={withFAB(Calendar, CalendarFABs)}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="calendar" size={size} color={color} />
@@ -51,7 +55,7 @@ const Homepage = ({ navigation }) => {
       />
       <Tab.Screen
         name="Stats"
-        component={withFAB(Stats)}
+        component={withFAB(Stats, StatFABs)}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="line-chart" size={size} color={color} />
@@ -61,7 +65,7 @@ const Homepage = ({ navigation }) => {
       />
       <Tab.Screen
         name="Goals"
-        component={withFAB(Goals)}
+        component={withFAB(Goals, GoalFABs)}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="bullseye" size={size} color={color} />
